@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Martin Linkhorst"]
   s.date = %q{2009-12-02}
-  s.description = %q{A different and possibly longer explanation of}
+  s.description = %q{Provides methods to publish and unpublish your active record models based on a datetime. Also adds named scopes to nicely filter your records. Does not touch any controller or views.}
   s.email = %q{m.linkhorst@googlemail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "db/schema.rb",
      "lib/publishable.rb",
+     "publishable.gemspec",
      "rails/init.rb",
      "spec/publishable_spec.rb",
      "spec/spec.opts",
@@ -33,7 +34,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{One line summary of your gem}
+  s.summary = %q{Adds publishing functionality to your active record model}
   s.test_files = [
     "spec/publishable_spec.rb",
      "spec/spec_helper.rb"
