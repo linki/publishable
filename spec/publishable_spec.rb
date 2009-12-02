@@ -37,8 +37,8 @@ describe Publishable do
       @model.should_not be_published
     end
     
-    it "should ask :publishable_column" do
-      Model.expects(:publishable_column).returns(:published_at)
+    it "should ask :publishable_column_name" do
+      Model.expects(:publishable_column_name).returns(:published_at)
       @model.published?
     end
   end
@@ -112,7 +112,7 @@ describe Publishable do
 
   describe "database column" do
     it "should default to :published_at" do
-      Model.publishable_column.should == :published_at
+      Model.publishable_column_name.should == :published_at
     end
     
     it "should be possible to change the column name" do
@@ -120,7 +120,7 @@ describe Publishable do
         include Publishable
         publishable :made_available_on
       end
-      Model2.publishable_column.should == :made_available_on
+      Model2.publishable_column_name.should == :made_available_on
     end
   end
 end

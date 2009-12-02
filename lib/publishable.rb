@@ -10,22 +10,26 @@ module Publishable
 
       named_scope :published, lambda { |*args|
         if args.first.nil? || TRUE_VALUES.include?(args.first)
-          { :conditions => ["#{quoted_table_name}.#{publishable_column} IS NOT NULL AND #{quoted_table_name}.#{ActiveRecord::Base.connection.quote_column_name(publishable_column)} <= ?", Time.now.utc] }
+          { :conditions => ["#{quoted_table_name}.#{quoted_publishable_column_name} IS NOT NULL AND #{quoted_table_name}.#{quoted_publishable_column_name} <= ?", Time.now.utc] }
         else
-          { :conditions => ["#{quoted_table_name}.#{publishable_column} IS NULL OR #{quoted_table_name}.#{ActiveRecord::Base.connection.quote_column_name(publishable_column)} > ?", Time.now.utc] }
+          { :conditions => ["#{quoted_table_name}.#{quoted_publishable_column_name} IS NULL OR #{quoted_table_name}.#{quoted_publishable_column_name} > ?", Time.now.utc] }
         end
       }
 
       class_eval do
         class << self
-          attr_accessor :publishable_column
+          attr_accessor :publishable_column_name
 
           def unpublished
             published(false)
-          end          
+          end
+          
+          def quoted_publishable_column_name
+            ActiveRecord::Base.connection.quote_column_name(publishable_column_name)
+          end
         end
         
-        self.publishable_column = column
+        self.publishable_column_name = column
 
         def published?
           !!published
@@ -36,7 +40,7 @@ module Publishable
         end
 
         def published
-          send(self.class.publishable_column) && send(self.class.publishable_column) <= Time.now
+          send(self.class.publishable_column_name) && send(self.class.publishable_column_name) <= Time.now
         end
 
         def published=(boolean)
@@ -44,11 +48,11 @@ module Publishable
         end
         
         def publish(time = Time.now)
-          self.send("#{self.class.publishable_column}=", time.utc) unless published?
+          self.send("#{self.class.publishable_column_name}=", time.utc) unless published?
         end
         
         def unpublish
-          self.send("#{self.class.publishable_column}=", nil)
+          self.send("#{self.class.publishable_column_name}=", nil)
         end
       
         def publish!
@@ -60,7 +64,7 @@ module Publishable
 
         def unpublish!
           unpublish
-          update_attribute(self.class.publishable_column, published_at)
+          update_attribute(self.class.publishable_column_name, send(publishable_column_name))
         end
       end
     end
