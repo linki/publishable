@@ -15,6 +15,7 @@ begin
     gemspec.homepage = "http://github.com/linki/publishable"
     gemspec.authors = ["Martin Linkhorst"]
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install jeweler"
 end
