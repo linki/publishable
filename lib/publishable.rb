@@ -10,9 +10,9 @@ module Publishable
 
       named_scope :published, lambda { |*args|
         if args.first.nil? || TRUE_VALUES.include?(args.first)
-          { :conditions => ["#{quoted_table_name}.`#{publishable_column}` IS NOT NULL AND #{quoted_table_name}.`#{publishable_column}` <= ?", Time.now.utc] }
+          { :conditions => ["#{quoted_table_name}.'#{publishable_column}' IS NOT NULL AND #{quoted_table_name}.'#{publishable_column}' <= ?", Time.now.utc] }
         else
-          { :conditions => ["#{quoted_table_name}.`#{publishable_column}` IS NULL OR #{quoted_table_name}.`#{publishable_column}` > ?", Time.now.utc] }
+          { :conditions => ["#{quoted_table_name}.'#{publishable_column}' IS NULL OR #{quoted_table_name}.'#{publishable_column}' > ?", Time.now.utc] }
         end
       }
 
