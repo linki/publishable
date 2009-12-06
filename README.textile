@@ -4,9 +4,9 @@ h1. Publishable
   gem install publishable --source http://gemcutter.org
 </pre>
 
-h2. Usage
+h2. Setup
 
-you need a datetime column in your database and call publishable in your class body
+you need a datetime column in your table and call publishable in your class body
 
 <pre>
   class Model < ActiveRecord::Base
