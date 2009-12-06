@@ -31,3 +31,5 @@ h2. Methods
 </pre>
 
 please see specs for details
+
+Copyright (c) 2009 Martin Linkhorst, released under the MIT license.
