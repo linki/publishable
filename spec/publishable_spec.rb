@@ -21,7 +21,7 @@ describe Publishable do
 
     it "should be published? when :published_at is now" do
       now = Time.now; Time.stubs(:now).returns(now)
-      @model.published_at = Time.now #stub me
+      @model.published_at = Time.now
       @model.should be_published
     end
     
@@ -50,13 +50,13 @@ describe Publishable do
 
     it "should set :published_at to current time with no parameter" do
       now = Time.now; Time.expects(:now).returns(now)
-      @model.expects(:published_at=).with(now).returns(true)
+      @model.expects(:published_at=).with(now).returns(now)
       @model.publish
     end
     
     it "should set :published_at to given time if parameter present" do
       tomorrow = Time.now + 1.day
-      @model.expects(:published_at=).with(tomorrow).returns(true)
+      @model.expects(:published_at=).with(tomorrow).returns(tomorrow)
       @model.publish(tomorrow)      
     end
     
