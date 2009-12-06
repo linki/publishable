@@ -1,0 +1,31 @@
+h2. Installation
+
+gem install publishable --source http://gemcutter.org
+
+h2. Usage
+
+you need a datetime column in your database and call publishable in your class body
+
+<pre>
+  class Model < ActiveRecord::Base
+    publishable
+  
+    # OR
+  
+    publishable :made_public_on # if your column is not named published_at
+  end
+</pre>
+
+h2. Methods
+
+<pre>
+  album = Album.new
+
+  album.published?    # => false
+  album.publish!
+  album.published?    # => true
+
+  Album.published.all # => finds all published albums
+</pre>
+
+please see specs for details
