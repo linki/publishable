@@ -1,7 +1,7 @@
 h1. Publishable
 
 <pre>
-  gem install publishable --source http://gemcutter.org
+  gem install publishable
 </pre>
 
 h2. Setup
