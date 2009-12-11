@@ -9,17 +9,17 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Martin Linkhorst"]
-  s.date = %q{2009-12-03}
+  s.date = %q{2009-12-11}
   s.description = %q{Provides methods to publish and unpublish your active record models based on a datetime. Also adds named scopes to nicely filter your records. Does not touch any controller or views.}
   s.email = %q{m.linkhorst@googlemail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README"
+     "README.textile"
   ]
   s.files = [
     ".gitignore",
      "LICENSE",
-     "README",
+     "README.textile",
      "Rakefile",
      "VERSION",
      "db/schema.rb",
