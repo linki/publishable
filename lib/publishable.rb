@@ -3,33 +3,29 @@ require 'publishable/railtie' if defined?(Rails)
 module Publishable
   module ClassMethods
     def publishable
-      scope :published, lambda { |published = true|
-        if published
-          where('published_at IS NOT NULL AND published_at <= ?', Time.now.utc)
-        else
-          where('published_at IS     NULL OR  published_at >  ?', Time.now.utc)
-        end
+      scope :published, lambda { |time = Time.now|
+        where('published_at IS NOT NULL AND published_at <= ?', time.utc)
       }
 
-      def self.unpublished
-        published(false)
-      end    
+      scope :unpublished, lambda { |time = Time.now|
+        where('published_at IS NULL OR published_at > ?', time.utc)
+      }
       
       include InstanceMethods
     end
   end
   
   module InstanceMethods
-    def published?
-      published_at ? published_at <= Time.now : false
+    def published?(time = Time.now)
+      published_at ? published_at <= time : false
     end
 
-    def publish
-      self.published_at = Time.now.utc unless published?
+    def publish(time = Time.now)
+      self.published_at = time unless published?
     end
     
-    def publish!
-      publish && save
+    def publish!(time = Time.now)
+      publish(time) && save
     end
   end
 end

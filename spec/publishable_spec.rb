@@ -61,7 +61,6 @@ describe Publishable do
   
     it "should find unpublished records" do
       Album.unpublished.should == [@album_1, @album_4]
-      Album.unpublished == Album.published(false)
     end
   end
 end

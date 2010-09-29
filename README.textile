@@ -6,15 +6,11 @@ h1. Publishable
 
 h2. Setup
 
-you need a datetime column in your table and call publishable in your class body
+you need a datetime column called published_at in your table and call publishable in your class body
 
 <pre>
-  class Model < ActiveRecord::Base
+  class Album < ActiveRecord::Base
     publishable
-  
-    # OR
-  
-    publishable :made_public_on # if your column is not named published_at
   end
 </pre>
 
@@ -24,12 +20,10 @@ h2. Methods
   album = Album.new
 
   album.published?    # => false
-  album.publish!
+  album.publish!      # calls :save afterwards
   album.published?    # => true
 
   Album.published.all # => finds all published albums
 </pre>
 
-please see specs for details
-
-Copyright (c) 2009 Martin Linkhorst, released under the MIT license.
+Copyright (c) 2010 Martin Linkhorst, released under the MIT license.
