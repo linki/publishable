@@ -21,7 +21,7 @@ module Publishable
     end
 
     def publish(time = Time.now)
-      self.published_at = time unless published?
+      self.published_at = time unless published?(time)
     end
     
     def publish!(time = Time.now)
