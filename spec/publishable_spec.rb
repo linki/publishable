@@ -1,8 +1,13 @@
 require File.expand_path('../spec_helper', __FILE__)
 
 class Album < ActiveRecord::Base
-  extend Publishable::ClassMethods
+  extend Publishable
   publishable
+end
+
+class Feature < ActiveRecord::Base
+  extend Publishable
+  publishable :on => :public_since
 end
 
 describe Publishable do
@@ -50,9 +55,9 @@ describe Publishable do
   describe "scope" do
     before do
       @album_1 = Album.create!(:published_at => nil)
-      @album_2 = Album.create!(:published_at => Time.now.utc - 60)
-      @album_3 = Album.create!(:published_at => Time.now.utc)
-      @album_4 = Album.create!(:published_at => Time.now.utc + 60)
+      @album_2 = Album.create!(:published_at => Time.now - 60)
+      @album_3 = Album.create!(:published_at => Time.now)
+      @album_4 = Album.create!(:published_at => Time.now + 60)
     end
   
     it "should find published records" do
@@ -62,5 +67,32 @@ describe Publishable do
     it "should find unpublished records" do
       Album.unpublished.should == [@album_1, @album_4]
     end
+  end
+  
+  describe "other column" do
+    it "should be publishable" do
+      @feature = Feature.new
+      @feature.should_not be_published
+      @feature.publish
+      @feature.should be_published
+    end
+    
+    describe "scope" do
+      before do
+        Feature.delete_all
+        @feature_1 = Feature.create!(:public_since => nil)
+        @feature_2 = Feature.create!(:public_since => Time.now - 60)
+        @feature_3 = Feature.create!(:public_since => Time.now)
+        @feature_4 = Feature.create!(:public_since => Time.now + 60)
+      end
+
+      it "should find published records" do
+        Feature.published.should == [@feature_2, @feature_3]
+      end
+
+      it "should find unpublished records" do
+        Feature.unpublished.should == [@feature_1, @feature_4]
+      end
+    end    
   end
 end

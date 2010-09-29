@@ -1,31 +1,37 @@
 require 'publishable/railtie' if defined?(Rails)
 
 module Publishable
-  module ClassMethods
-    def publishable
-      scope :published, lambda { |time = Time.now|
-        where('published_at IS NOT NULL AND published_at <= ?', time.utc)
-      }
-
-      scope :unpublished, lambda { |time = Time.now|
-        where('published_at IS NULL OR published_at > ?', time.utc)
-      }
-      
-      include InstanceMethods
-    end
+  def self.extended(base)
+    base.extend ClassMethods
   end
   
-  module InstanceMethods
-    def published?(time = Time.now)
-      published_at ? published_at <= time : false
-    end
+  module ClassMethods
+    def publishable(options = {})
+      column_name = (options[:on] || :published_at).to_s
 
-    def publish(time = Time.now)
-      self.published_at = time unless published?(time)
-    end
-    
-    def publish!(time = Time.now)
-      publish(time) && save
+      if respond_to?(:scope)
+        scope :published, lambda { |time = Time.now|
+          where("#{column_name} IS NOT NULL AND #{column_name} <= ?", time.utc)
+        }
+
+        scope :unpublished, lambda { |time = Time.now|
+          where("#{column_name} IS NULL OR #{column_name} > ?", time.utc)
+        }
+      end
+      
+      class_eval <<-EVIL, __FILE__, __LINE__ + 1
+        def published?(time = Time.now)
+          #{column_name} ? #{column_name} <= time : false
+        end
+
+        def publish(time = Time.now)
+          self.#{column_name} = time unless published?(time)
+        end
+
+        def publish!(time = Time.now)
+          publish(time) && (!respond_to?(:save) || save)
+        end        
+      EVIL
     end
   end
 end
