@@ -1,11 +1,10 @@
-$: << File.join(File.dirname(__FILE__), "/../lib")
-require 'rubygems'
-require 'spec'
-
-require 'active_record'
-require 'active_support'
-
+$:.unshift File.expand_path('../../lib', __FILE__)
 require 'publishable'
+require 'spec'
+require 'spec/autorun'
+
+require 'sqlite3'
+require 'active_record'
 
 Spec::Runner.configure do |config|
   config.mock_with :mocha
