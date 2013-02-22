@@ -1,98 +1,296 @@
-require File.expand_path('../spec_helper', __FILE__)
-
-class Album < ActiveRecord::Base
-  extend Publishable
-  publishable
-end
-
-class Feature < ActiveRecord::Base
-  extend Publishable
-  publishable :on => :public_since
-end
+require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Publishable do
-  ActiveRecord::Base.establish_connection :adapter  => 'sqlite3',
-                                          :database => File.expand_path('../../db/test.sqlite3', __FILE__)
-  load('db/schema.rb')
-  
-  before do
-    Album.delete_all
-    @album = Album.new
-  end
-    
-  it "should not be published" do
-    # nil or false
-    @album.published_at.should be_false
-    @album.should_not be_published
-    
-    # in the future
-    @album.published_at = Time.now + 60
-    @album.should_not be_published
+
+  context "with a Boolean publish attribute" do
+
+    before :all do
+      build_model :post do
+        string :title
+        text :body
+        boolean :published
+        attr_accessible :title, :body, :published
+        validates :body, :title, :presence => true
+        extend Publishable
+        publishable
+      end
+    end
+
+    before :each do
+      @post = Post.new :title => Faker::Lorem.sentence(4), :body => Faker::Lorem.paragraphs(3).join("\n")
+      @post.should be_valid
+      @post.should_not be_published
+    end
+
+    it "should become published when publish flag is set" do
+      @post.publish!
+      @post.should be_published
+    end
+
+    it "should become unpublished when publish flag is cleared" do
+      @post.published = true
+      @post.should be_published
+      @post.unpublish!
+      @post.should_not be_published
+    end
+
   end
 
-  it "should be published" do
-    # now
-    @album.published_at = Time.now
-    @album.should be_published
-    
-    # in the past
-    @album.published_at = Time.now - 60
-    @album.should be_published
-  end
-  
-  it "should be publishable" do
-    @album.should_not be_published
-    @album.publish
-    @album.should be_published
-  end
-  
-  it "should persist" do
-    @album.expects(:publish).returns(true)
-    @album.expects(:save)
-    @album.publish!
-  end
-  
-  describe "scope" do
-    before do
-      @album_1 = Album.create!(:published_at => nil)
-      @album_2 = Album.create!(:published_at => Time.now - 60)
-      @album_3 = Album.create!(:published_at => Time.now)
-      @album_4 = Album.create!(:published_at => Time.now + 60)
+  context "with a Date publish attribute" do
+
+    before :all do
+      build_model :post do
+        string :title
+        text :body
+        date :published
+        attr_accessible :title, :body, :published
+        validates :body, :title, :presence => true
+        extend Publishable
+        publishable
+      end
     end
-  
-    it "should find published records" do
-      Album.published.should == [@album_2, @album_3]
+
+    before :each do
+      @post = Post.new :title => Faker::Lorem.sentence(4), 
+                       :body => Faker::Lorem.paragraphs(3).join("\n")
+      @post.should be_valid
+      @post.should_not be_published
     end
-  
-    it "should find unpublished records" do
-      Album.unpublished.should == [@album_1, @album_4]
+
+    it "should be published if today is after the publish date" do
+      @post.published = Date.current - 1.days
+      @post.should be_published
     end
+
+    it "should be published if today is the publish date" do
+      @post.published = Date.current
+      @post.should be_published
+    end
+
+    it "should not be published if today is before the publish date" do
+      @post.published = Date.current + 1.days
+      @post.should_not be_published
+    end
+
+    it "should have a publish date of today or earlier after publish is directly called" do
+      @post.publish
+      @post.should be_published
+      @post.published.should <= Date.current
+    end
+
   end
-  
-  describe "other column" do
-    it "should be publishable" do
-      @feature = Feature.new
-      @feature.should_not be_published
-      @feature.publish
-      @feature.should be_published
+
+  context "with a DateTime publish attribute" do
+
+    before :all do
+      build_model :post do
+        string :title
+        text :body
+        datetime :published
+        attr_accessible :title, :body, :published
+        validates :body, :title, :presence => true
+        extend Publishable
+        publishable
+      end
     end
-    
-    describe "scope" do
-      before do
-        Feature.delete_all
-        @feature_1 = Feature.create!(:public_since => nil)
-        @feature_2 = Feature.create!(:public_since => Time.now - 60)
-        @feature_3 = Feature.create!(:public_since => Time.now)
-        @feature_4 = Feature.create!(:public_since => Time.now + 60)
+
+    describe "publishing and unpublishing" do
+
+      before :each do
+        @post = Post.new :title => Faker::Lorem.sentence(4), 
+                         :body => Faker::Lorem.paragraphs(3).join("\n")
+        @post.should be_valid
+        @post.should_not be_published
       end
 
-      it "should find published records" do
-        Feature.published.should == [@feature_2, @feature_3]
+      it "should be published if now is after the publish time" do
+        @post.published = DateTime.now - 1.minute
+        @post.should be_published
       end
 
-      it "should find unpublished records" do
-        Feature.unpublished.should == [@feature_1, @feature_4]
+      it "should not be published if now is before the publish time" do
+        @post.published = DateTime.now + 1.minute
+        @post.should_not be_published
       end
-    end    
+
+      it "should have a publish time of now or earlier after publish is directly called" do
+        @post.publish
+        @post.should be_published
+        @post.published.should <= DateTime.now
+      end
+
+    end
+
+    describe "querying for all upcoming items" do
+
+      before :all do
+        # create a bunch of published Posts
+        (rand(9) + 1).times do
+          days_ago = (rand(100) + 1).days
+          Post.create :published => Date.current - days_ago,
+                      :title => Faker::Lorem.sentence(4), 
+                      :body => Faker::Lorem.paragraphs(3).join("\n")
+        end
+      end
+
+      after :each do
+        Post.upcoming.destroy_all
+      end
+
+      after :all do
+        # have to destroy posts between tests - these are fake, not in the DB, so database-cleaner won't help us
+        Post.destroy_all
+      end
+
+      [1, 2, 5, 10].each do |how_many|
+        it "should return all #{how_many} upcoming queries if no limit is specified" do
+          # create a known number of unpublished Posts
+          how_many.times do
+            days_from_now = (rand(100) + 1).days
+            Post.create :published => Date.current + days_from_now,
+                        :title => Faker::Lorem.sentence(4), 
+                        :body => Faker::Lorem.paragraphs(3).join("\n")
+          end
+          size = Post.upcoming.size
+          size.should == how_many
+        end
+      end
+
+    end
+
+    describe "querying for all recent items" do
+
+      before :all do
+        # create a bunch of unpublished posts
+        (rand(7) + 3).times do
+          days_from_now = (rand(100) + 1).days
+          Post.create :published => Date.current + days_from_now,
+                      :title => Faker::Lorem.sentence(4), 
+                      :body => Faker::Lorem.paragraphs(3).join("\n")
+        end
+      end
+
+      after :each do
+        Post.recent.destroy_all
+      end
+
+      after :all do
+        Post.destroy_all
+      end
+
+      [1, 2, 5, 10].each do |how_many|
+        it "should return all #{how_many} recent queries if no limit is specified" do
+          # create a known number of published posts
+          how_many.times do
+            Post.create :published => Date.current - rand(100).days, 
+                        :title => Faker::Lorem.sentence(4), 
+                        :body => Faker::Lorem.paragraphs(3).join("\n")
+          end
+          Post.recent.size.should == how_many
+        end
+      end
+
+    end
+
+    describe "queries for recent or upcoming items" do
+
+      before :all do
+        # this is more a test for Publishable than it is for Story, but let's set the time to near the end of the day
+        # this was causing a failing condition due to UTC/local TZ differences
+        new_time = Time.local(2013, 01, 23, 22, 0, 0)
+        Timecop.travel(new_time)
+
+        (-5..5).each do |n|
+          Post.create :published =>  Date.current + n.days, 
+                      :title =>  Faker::Lorem.sentence(4), 
+                      :body =>  Faker::Lorem.paragraphs(3).join("\n")
+        end
+      end
+
+      after :all do
+        # go back to the normal time and date
+        Timecop.return
+        Post.destroy_all
+      end
+
+      context "recent" do
+
+        it "returns only published items" do
+          Post.recent.should each be_published
+        end
+
+        it "returns the requested number of items" do
+          Post.recent(2).size.should == 2
+        end
+
+        it "returns as many items as available if we request too many" do
+          Post.recent(10).size.should == 6
+        end
+
+      end
+
+      context "upcoming" do
+
+        it "returns only unpublished items" do
+          Post.upcoming.should each be_unpublished
+        end
+
+        it "returns the requested number of items" do
+          Post.upcoming(2).size.should == 2
+        end
+
+        it "returns as many items as available if we request too many" do
+          Post.upcoming(50).size.should == 5
+        end
+
+      end
+
+    end
+
   end
+
+  describe "with an invalid configuration" do
+
+    it "should raise a configuration error when defined on an invalid column type" do
+      expect {
+        build_model :post do
+          string :title
+          text :body
+          attr_accessible :title, :body
+          validates :body, :title, :presence => true
+          extend Publishable
+          publishable :on => :title
+        end
+      }.to raise_error ActiveRecord::ConfigurationError
+    end
+
+    it "should raise a configuration error when the publish column not defined" do
+      expect {
+        build_model :post do
+          string :title
+          text :body
+          attr_accessible :title, :body
+          validates :body, :title, :presence => true
+          extend Publishable
+          publishable
+        end
+      }.to raise_error ActiveRecord::ConfigurationError
+    end
+
+    it "should raise a configuration error when defined on a missing column" do
+      expect {
+        build_model :post do
+          string :title
+          text :body
+          datetime :published
+          attr_accessible :title, :body, :published
+          validates :body, :title, :presence => true
+          extend Publishable
+          publishable :on => :foobar
+        end
+      }.to raise_error ActiveRecord::ConfigurationError
+    end
+
+  end
+
 end

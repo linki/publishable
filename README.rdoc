@@ -1,0 +1,73 @@
+= publishable
+
+*Publishable* allows a given Boolean, Date, or DateTime column to indicate whether an ActiveRecord
+model object is "published".  This can be used, for example, to schedule a news post to be published
+at some later date on a website, or to hide work-in-progress content until it is ready to be released
+to the public.
+
+Methods are provided to publish and unpublish the model object, and scopes are added for filtering
+your records.
+
+* When publishing via a Boolean column, the value of the column determines whether (+true+) or not (+false+)
+  the model object is published.
+* When publishing via a Date or DateTime column, the value of the published column must be before "now"
+  (or "today" for Date columns) for the object to be published.  Date or DateTime publishables also have
+  scopes for returning recent or upcoming records, i.e. records that have already been published, or records
+  that will be published in the future.
+
+== Setup
+
+1. Create the publishable column via a migration:
+
+    rails generate migration add_published_to_post published:date
+    rails generate migration add_published_to_story published:datetime
+    rails generate migration add_released_to_album released:boolean
+
+2. Declare that your models are publishable:
+
+    class Post < ActiveRecord::Base
+      publishable
+    end
+
+    class Story < ActiveRecord::Base
+      publishable
+    end
+
+    class Album < ActiveRecord::Base
+      publishable :on => :released
+    end
+
+The column name used by *publishable* can be specified via the +:on+ option. The default used (if +:on+
+is not specified) is +:published+.
+
+== Usage
+
+    published_posts = Post.recent(5) # Returns the five most recently-published Posts, in descending order by publish-date
+
+    album = Album.new
+    album.published?  # false - by default, records are not published
+    album.publish     # sets the 'released' column to true, but does not save it back to the database
+    album.publish!    # publishes AND saves the record to the database
+    album.published?  # true
+    album.unpublish!  # sets the 'released' column back to false and saves the record
+
+    story = Story.new
+    story.publish!(2.hours.from_now)    # Sets the story to go live in two hours
+    story.unpublish!                    # Sets the 'published' column to nil
+    upcoming_stories = Story.upcoming   # Get all stories that will be published in the future, in ascending order by publish-date
+
+== Contributing to publishable
+ 
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
+* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
+* Fork the project.
+* Start a feature/bugfix branch.
+* Commit and push until you are happy with your contribution.
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+== Copyright
+
+Copyright (c) 2010 Martin Linkhorst, released under the MIT license.
+Copyright (c) 2013 тιηуηυмвєяѕ. See LICENSE.txt for further details.
+
