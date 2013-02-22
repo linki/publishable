@@ -18,14 +18,19 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
+    ".rspec",
+    "Gemfile",
+    "Gemfile.lock",
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
     "lib/publishable.rb",
     "lib/publishable/railtie.rb",
+    "lib/publishable/version.rb",
     "publishable.gemspec",
     "spec/publishable_spec.rb",
-    "spec/spec_helper.rb"
+    "spec/spec_helper.rb",
+    "spec/support/matcher_each.rb"
   ]
   s.homepage = "http://github.com/linki/publishable"
   s.licenses = ["MIT"]
