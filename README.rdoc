@@ -15,6 +15,20 @@ your records.
   scopes for returning recent or upcoming records, i.e. records that have already been published, or records
   that will be published in the future.
 
+== Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'publishable'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install publishable
+
 == Setup
 
 1. Create the publishable column via a migration:
