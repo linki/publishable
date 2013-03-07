@@ -21,7 +21,7 @@ module Publishable
     PATCH = 0
 
     # Prerelease specification for e.g. "alpha", "beta.1", etc
-    PRERELEASE = 'beta.2'
+    PRERELEASE = nil
 
     # The build number; can be used for e.g. git version of current build, etc.
     BUILD = nil
