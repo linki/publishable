@@ -1,5 +1,10 @@
 ENV['RAILS_ENV'] ||= 'test'
 
+if RUBY_VERSION > '1.9'
+  require 'simplecov'
+  SimpleCov.start
+end
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 

@@ -17,16 +17,14 @@ group :development, :test do
   # Use Jeweler to build our gem
   gem "jeweler", "~> 1.8.4"
 
-  gem "rcov", ">= 0"
+  # RSpec for our testing framework
+  gem "rspec", "~> 2.8.0"
 end
 
 #==============================================================================
 # Gems just needed for testing.
 #==============================================================================
 group :test do
-
-  # RSpec for our testing framework
-  gem "rspec", "~> 2.8.0"
 
   # Faker generates names, email addresses, and other placeholders for factories
   gem 'ffaker'
@@ -37,4 +35,9 @@ group :test do
   # Test time-dependent functionality
   gem 'timecop'
 
+  if RUBY_VERSION > '1.9'
+    gem "simplecov", :require => false
+  else
+    gem "rcov", ">= 0"
+  end
 end
