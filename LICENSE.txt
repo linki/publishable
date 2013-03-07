@@ -1,4 +1,5 @@
 Copyright (c) 2010 Martin Linkhorst
+Copyright (c) 2013 тιηуηυмвєяѕ
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
