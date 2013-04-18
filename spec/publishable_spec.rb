@@ -264,7 +264,7 @@ describe Publishable do
       }.to raise_error ActiveRecord::ConfigurationError
     end
 
-    it 'should raise a configuration error when the publish column not defined' do
+    it 'should not raise a configuration error when the publish column not defined' do
       expect {
         build_model :post do
           string :title
@@ -274,10 +274,10 @@ describe Publishable do
           extend Publishable
           publishable
         end
-      }.to raise_error ActiveRecord::ConfigurationError
+      }.to_not raise_error
     end
 
-    it 'should raise a configuration error when defined on a missing column' do
+    it 'should not raise a configuration error when defined on a missing column' do
       expect {
         build_model :post do
           string :title
@@ -288,7 +288,7 @@ describe Publishable do
           extend Publishable
           publishable :on => :foobar
         end
-      }.to raise_error ActiveRecord::ConfigurationError
+      }.to_not raise_error
     end
 
   end
