@@ -1,4 +1,4 @@
-= publishable
+= publishable {<img src="https://travis-ci.org/linki/publishable.png?branch=master" alt="Build Status" />}[https://travis-ci.org/linki/publishable]
 
 *Publishable* allows a given Boolean, Date, or DateTime column to indicate whether an ActiveRecord
 model object is "published".  This can be used, for example, to schedule a news post to be published
