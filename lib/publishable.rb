@@ -38,9 +38,8 @@ module Publishable
     def publishable(options = {})
       return unless table_exists?
       column_name = (options[:on] || :published).to_sym
-      unless self.columns_hash[column_name.to_s].present?
-        raise ActiveRecord::ConfigurationError, "No '#{column_name}'column available for Publishable column on model #{self.name}"
-      end
+      # silently ignore a missing column - since bombing on a missing column can make re-running migrations very hard
+      return unless self.columns_hash[column_name.to_s].present?
       column_type = self.columns_hash[column_name.to_s].type
 
       if respond_to?(:scope)
