@@ -52,7 +52,8 @@ Or install it yourself as:
     end
 
 The column name used by *publishable* can be specified via the +:on+ option. The default used (if +:on+
-is not specified) is +:published+.
+is not specified) is +:published+. If publishing via a Boolean column, be sure to add a default value to
+the column in the migration— otherwise existing models will be neither published nor unpublished.
 
 == Usage
 
