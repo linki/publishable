@@ -117,7 +117,7 @@ module Publishable
             end
 
             def unpublish()
-              self.#{column_name} = null
+              self.#{column_name} = nil
             end
 
             def unpublish!()
@@ -144,7 +144,7 @@ module Publishable
             end
 
             def unpublish()
-              self.#{column_name} = null
+              self.#{column_name} = nil
             end
 
             def unpublish!()
@@ -255,7 +255,7 @@ module Publishable
 
     # @!method unpublish
     #   Un-publish this object, i.e. set it to not be published.  For a Boolean publish field, the field is set to
-    #   false; for a Date/DateTime field, the field is set to null.
+    #   false; for a Date/DateTime field, the field is cleared.
     #   @!scope instance
 
     # @!method unpublish!

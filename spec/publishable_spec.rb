@@ -78,6 +78,13 @@ describe Publishable do
       @post.published.should <= Date.current
     end
 
+    it 'can be unpublished' do
+      @post.published = Date.current
+      @post.should be_published
+      @post.unpublish!
+      @post.should_not be_published
+    end
+
   end
 
   context 'with a DateTime publish attribute' do
@@ -117,6 +124,13 @@ describe Publishable do
         @post.publish
         @post.should be_published
         @post.published.should <= DateTime.now
+      end
+
+      it 'can be unpublished' do
+        @post.published = DateTime.now - 1.minute
+        @post.should be_published
+        @post.unpublish!
+        @post.should_not be_published
       end
 
     end
