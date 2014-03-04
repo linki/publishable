@@ -12,11 +12,11 @@ Gem::Specification.new do |s|
   s.version = Publishable::VERSION.to_s
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Martin Linkhorst", "\321\202\316\271\316\267\321\203\316\267\317\205\320\274\320\262\321\224\321\217\321\225"]
+  s.authors = ["Martin Linkhorst", "\321\202\316\271\316\267\321\203\316\267\317\205\320\274\320\262\321\224\321\217\321\225", "Andrew Janssen"]
   s.date = "2013-02-22"
   s.date = "2013-04-30"
   s.description = "Provides methods to publish and unpublish your active record models based on a boolean flag, a date, or a datetime. Also adds named scopes to nicely filter your records. Does not touch any controller or views."
-  s.email = ["m.linkhorst@googlemail.com", "info@tinynumbers.com"]
+  s.email = ["m.linkhorst@googlemail.com", "info@tinynumbers.com", "andrew.janssen@sardiusgroup.com"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
