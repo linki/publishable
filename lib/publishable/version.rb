@@ -18,7 +18,7 @@ module Publishable
     MINOR = 0
 
     # The patch-level, incremented for minor bug fixes / patches.
-    PATCH = 2
+    PATCH = 3
 
     # Prerelease specification for e.g. "alpha", "beta.1", etc
     PRERELEASE = nil
