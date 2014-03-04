@@ -83,6 +83,7 @@ the column in the migration— otherwise existing models will be neither publish
 
 == Copyright
 
-Copyright (c) 2010 Martin Linkhorst, released under the MIT license.
-Copyright (c) 2013 тιηуηυмвєяѕ. See LICENSE.txt for further details.
+Copyright (c) 2010-2014 Martin Linkhorst, released under the MIT license.
+Copyright (c) 2013-2014 тιηуηυмвєяѕ. See LICENSE.txt for further details.
+Copyright (c) 2013-2014 Andrew Janssen. See LICENSE.txt for further details.
 

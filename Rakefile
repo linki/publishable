@@ -21,7 +21,7 @@ begin
     gem.description = 'Provides methods to publish and unpublish your active record models based on a boolean flag, a date, or a datetime. Also adds named scopes to nicely filter your records. Does not touch any controller or views.'
     gem.email = ['m.linkhorst@googlemail.com', 'info@tinynumbers.com']
     gem.homepage = 'http://github.com/linki/publishable'
-    gem.authors = ['Martin Linkhorst', 'тιηуηυмвєяѕ']
+    gem.authors = ['Martin Linkhorst', 'тιηуηυмвєяѕ', 'Andrew Janssen']
     gem.version = "#{Publishable::VERSION}"
     # dependencies defined in Gemfile
     # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options

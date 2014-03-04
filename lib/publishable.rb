@@ -11,8 +11,9 @@ require 'publishable/railtie' if defined?(Rails)
 # Provides scopes for finding published and unpublished items, and (for date/datetime published columns) for returning
 # recent or upcoming items.
 #
-# @author Martin Linkhorst <m.linkhorst@googlemail.com>
+# @author Martin Linkhorst <m.linkhorst@gmail.com>
 # @author David Daniell / тιηуηυмвєяѕ <info@tinynumbers.com>
+# @author Andrew Janssen <andrew.janssen@sardiusgroup.com>
 module Publishable
 
   # Add our features to the base class.

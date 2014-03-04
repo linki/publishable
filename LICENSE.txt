@@ -1,5 +1,6 @@
-Copyright (c) 2010 Martin Linkhorst
-Copyright (c) 2013 тιηуηυмвєяѕ
+Copyright (c) 2010-2014 Martin Linkhorst
+Copyright (c) 2013-2014 тιηуηυмвєяѕ
+Copyright (c) 2013-2014 Andrew Janssen
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
