@@ -133,14 +133,6 @@ describe Publishable do
         @post.should_not be_published
       end
 
-      it 'saves the object after calling unpublish!' do
-        @post.published = DateTime.now - 1.minute
-        @post.should be_published
-        @post.unpublish!
-        @post.should_not be_published
-        @post.should_not be_changed
-      end
-
     end
 
     describe 'querying for all upcoming items' do
