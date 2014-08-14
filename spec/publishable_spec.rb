@@ -133,6 +133,14 @@ describe Publishable do
         @post.should_not be_published
       end
 
+      it 'saves the object after calling unpublish!' do
+        @post.published = DateTime.now - 1.minute
+        @post.should be_published
+        @post.unpublish!
+        @post.should_not be_published
+        @post.should_not be_changed
+      end
+
     end
 
     describe 'querying for all upcoming items' do
@@ -305,6 +313,39 @@ describe Publishable do
       }.to_not raise_error
     end
 
+  end
+
+  describe "unpublish!" do
+    before :all do
+      build_model :post do
+        string :title
+        text :body
+        boolean :published
+        attr_accessible :title, :body, :published
+        validates :body, :title, :presence => true
+        extend Publishable
+        publishable
+      end
+    end
+
+    let(:post) do
+      Post.create(
+        :title => Faker::Lorem.sentence(4),
+        :body => Faker::Lorem.paragraphs(3).join("\n"),
+        :published => true
+      )
+    end
+
+    before :each do
+      post.should be_valid
+      post.should be_published
+    end
+
+    it 'saves the post after calling unpublish!' do
+      post.unpublish!
+      post.should_not be_published
+      post.should_not be_changed
+    end
   end
 
 end
