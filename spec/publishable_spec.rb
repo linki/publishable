@@ -307,4 +307,37 @@ describe Publishable do
 
   end
 
+  describe "unpublish!" do
+    before :all do
+      build_model :post do
+        string :title
+        text :body
+        boolean :published
+        attr_accessible :title, :body, :published
+        validates :body, :title, :presence => true
+        extend Publishable
+        publishable
+      end
+    end
+
+    let(:post) do
+      Post.create(
+        :title => Faker::Lorem.sentence(4),
+        :body => Faker::Lorem.paragraphs(3).join("\n"),
+        :published => true
+      )
+    end
+
+    before :each do
+      post.should be_valid
+      post.should be_published
+    end
+
+    it 'saves the post after calling unpublish!' do
+      post.unpublish!
+      post.should_not be_published
+      post.should_not be_changed
+    end
+  end
+
 end

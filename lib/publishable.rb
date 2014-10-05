@@ -119,6 +119,7 @@ module Publishable
 
             def unpublish()
               self.#{column_name} = nil
+              true
             end
 
             def unpublish!()
