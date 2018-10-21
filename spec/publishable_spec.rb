@@ -2,6 +2,43 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Publishable do
 
+  shared_examples_for 'bang methods' do
+
+    after do
+      @post.destroy
+    end
+
+    describe '#publish!' do
+      before do
+        @post.publish!
+      end
+
+      it 'published the record' do
+        @post.should be_published
+      end
+
+      it 'saves the record' do
+        @post.should_not be_changed
+      end
+    end
+
+    describe '#unpublish!' do
+      before do
+        @post.publish!
+        @post.unpublish!
+      end
+
+      it 'unpublishes the record' do
+        @post.should_not be_published
+      end
+
+      it 'saves the record' do
+        @post.should_not be_changed
+      end
+    end
+
+  end
+
   context 'with a Boolean publish attribute' do
 
     before :all do
@@ -22,17 +59,7 @@ describe Publishable do
       @post.should_not be_published
     end
 
-    it 'should become published when publish flag is set' do
-      @post.publish!
-      @post.should be_published
-    end
-
-    it 'should become unpublished when publish flag is cleared' do
-      @post.published = true
-      @post.should be_published
-      @post.unpublish!
-      @post.should_not be_published
-    end
+    it_behaves_like 'bang methods'
 
   end
 
@@ -78,12 +105,7 @@ describe Publishable do
       @post.published.should <= Date.current
     end
 
-    it 'can be unpublished' do
-      @post.published = Date.current
-      @post.should be_published
-      @post.unpublish!
-      @post.should_not be_published
-    end
+    it_behaves_like 'bang methods'
 
   end
 
@@ -126,12 +148,7 @@ describe Publishable do
         @post.published.should <= DateTime.now
       end
 
-      it 'can be unpublished' do
-        @post.published = DateTime.now - 1.minute
-        @post.should be_published
-        @post.unpublish!
-        @post.should_not be_published
-      end
+      it_behaves_like 'bang methods'
 
     end
 
@@ -209,8 +226,8 @@ describe Publishable do
     describe 'queries for recent or upcoming items' do
 
       before :all do
-        # this is more a test for Publishable than it is for Story, but let's set the time to near the end of the day
-        # this was causing a failing condition due to UTC/local TZ differences
+        # Let's set the time to near the end of the day.
+        # This was previously causing a failing condition due to UTC/local TZ differences.
         new_time = Time.local(2013, 01, 23, 22, 0, 0)
         Timecop.travel(new_time)
 
@@ -305,39 +322,6 @@ describe Publishable do
       }.to_not raise_error
     end
 
-  end
-
-  describe "unpublish!" do
-    before :all do
-      build_model :post do
-        string :title
-        text :body
-        boolean :published
-        attr_accessible :title, :body, :published
-        validates :body, :title, :presence => true
-        extend Publishable
-        publishable
-      end
-    end
-
-    let(:post) do
-      Post.create(
-        :title => Faker::Lorem.sentence(4),
-        :body => Faker::Lorem.paragraphs(3).join("\n"),
-        :published => true
-      )
-    end
-
-    before :each do
-      post.should be_valid
-      post.should be_published
-    end
-
-    it 'saves the post after calling unpublish!' do
-      post.unpublish!
-      post.should_not be_published
-      post.should_not be_changed
-    end
   end
 
 end

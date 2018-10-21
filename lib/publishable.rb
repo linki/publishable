@@ -114,16 +114,17 @@ module Publishable
             end
 
             def publish!(_when = Time.now)
-              publish(_when) && (!respond_to?(:save) || save)
+              publish(_when)
+              save if respond_to?(:save)
             end
 
             def unpublish()
               self.#{column_name} = nil
-              true
             end
 
             def unpublish!()
-              unpublish() && (!respond_to?(:save) || save)
+              unpublish()
+              save if respond_to?(:save)
             end
           EVIL
 
@@ -142,7 +143,8 @@ module Publishable
             end
 
             def publish!(_when = Date.current)
-              publish(_when) && (!respond_to?(:save) || save)
+              publish(_when)
+              save if respond_to?(:save)
             end
 
             def unpublish()
@@ -150,7 +152,8 @@ module Publishable
             end
 
             def unpublish!()
-              unpublish() && (!respond_to?(:save) || save)
+              unpublish()
+              save if respond_to?(:save)
             end
           EVIL
 
